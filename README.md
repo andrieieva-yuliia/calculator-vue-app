@@ -6,10 +6,10 @@ Simple iphone calculator app built with Vue.js. It allows users to perform basic
 ## Technologies Used
 This project was built using the following technologies:
 
-Vue.js
-Vuex
-Vue Router
-SCSS
+- Vue.js
+- Vuex
+- Vue Router
+- SCSS
 
 ## Installation
 To run this project locally, you will need to have Node.js installed on your machine.
