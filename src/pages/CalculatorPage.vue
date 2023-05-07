@@ -1,8 +1,33 @@
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
+  data() {
+    return {
+      buttons: [
+        { id: 1, value: 'AC', type: 'clear' },
+        { id: 2, value: '+/-', type: 'sign' },
+        { id: 3, value: '%', type: 'percent' },
+        { id: 4, value: '÷', type: 'operator' },
+        { id: 5, value: '7', type: 'number' },
+        { id: 6, value: '8', type: 'number' },
+        { id: 7, value: '9', type: 'number' },
+        { id: 8, value: 'x', type: 'operator' },
+        { id: 9, value: '4', type: 'number' },
+        { id: 10, value: '5', type: 'number' },
+        { id: 11, value: '6', type: 'number' },
+        { id: 12, value: '-', type: 'operator' },
+        { id: 13, value: '1', type: 'number' },
+        { id: 14, value: '2', type: 'number' },
+        { id: 15, value: '3', type: 'number' },
+        { id: 16, value: '+', type: 'operator' },
+        { id: 17, value: '0', type: 'zero' },
+        { id: 18, value: '.', type: 'number' },
+        { id: 19, value: '=', type: 'equal' }
+      ]
+    };
+  },
   computed: {
     ...mapGetters(['currentDisplay'])
   },
@@ -15,7 +40,9 @@ export default defineComponent({
       'handleEqualClick',
       'handleClearClick'
     ]),
+    ...mapMutations(['clearCalculator']),
     nextPage() {
+      this.clearCalculator();
       this.$router.push('/character-info');
     },
     onButtonClick(button) {
@@ -41,34 +68,11 @@ export default defineComponent({
         case 'clear':
           this.handleClearClick();
           break;
+        default:
+          console.log('Unknown button');
       }
     }
   },
-  data() {
-    return {
-      buttons: [
-        { id: 1, value: 'AC', type: 'clear' },
-        { id: 2, value: '+/-', type: 'sign' },
-        { id: 3, value: '%', type: 'percent' },
-        { id: 4, value: '÷', type: 'operator' },
-        { id: 5, value: '7', type: 'number' },
-        { id: 6, value: '8', type: 'number' },
-        { id: 7, value: '9', type: 'number' },
-        { id: 8, value: 'x', type: 'operator' },
-        { id: 9, value: '4', type: 'number' },
-        { id: 10, value: '5', type: 'number' },
-        { id: 11, value: '6', type: 'number' },
-        { id: 12, value: '-', type: 'operator' },
-        { id: 13, value: '1', type: 'number' },
-        { id: 14, value: '2', type: 'number' },
-        { id: 15, value: '3', type: 'number' },
-        { id: 16, value: '+', type: 'operator' },
-        { id: 17, value: '0', type: 'zero' },
-        { id: 18, value: '.', type: 'number' },
-        { id: 19, value: '=', type: 'equal' }
-      ]
-    };
-  }
 });
 </script>
 
@@ -111,6 +115,8 @@ export default defineComponent({
 </template>
 
 <style lang="scss">
+@import '../style/mixins.scss';
+
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -162,6 +168,16 @@ export default defineComponent({
     margin-bottom: 5px;
 
     background: white;
+
+    @include onMobile {
+      width: 110px;
+      bottom: -20px;
+    }
+  }
+
+  @include onMobile {
+    width: 310px;
+    height: 600px;
   }
 }
 
@@ -193,11 +209,14 @@ export default defineComponent({
   vertical-align: bottom;
   height: 50px;
 
-  font-size: 65px;
+  font-size: 62px;
 
   margin-bottom: 35px;
   padding-right: 10px;
 
+  @include onMobile {
+    padding-right: 6px;
+  }
 }
 
 .button {
@@ -216,6 +235,11 @@ export default defineComponent({
   cursor: pointer;
   user-select: none;
   touch-action: manipulation;
+
+  @include onMobile {
+    width: 55px;
+    height: 55px;
+  }
 }
 
 .clear {
@@ -263,6 +287,10 @@ export default defineComponent({
 
   &:hover {
     filter: brightness(120%);
+  }
+
+  @include onMobile {
+    bottom: 8px;
   }
 }
 </style>

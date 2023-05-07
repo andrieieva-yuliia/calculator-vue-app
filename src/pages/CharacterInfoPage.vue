@@ -23,6 +23,7 @@ export default defineComponent({
     <div class="button-previous-page" @click="previousPage">
       ← Back
     </div>
+
     <button
       class="modal-button"
       v-if="showButton"
@@ -30,11 +31,14 @@ export default defineComponent({
     >
     character information
     </button>
-      <info-page :class="{ modal: isModalVisible }" v-if="isModalVisible"></info-page>
+
+    <info-page :class="{ modal: isModalVisible }" v-if="isModalVisible"></info-page>
   </div>
 </template>
 
 <style lang="scss">
+@import '../style/mixins.scss';
+
 .container {
   display: flex;
   flex-direction: column;
@@ -105,11 +109,18 @@ export default defineComponent({
     box-shadow: rgba(255, 255, 255, .2) 0 3px 15px inset, rgba(0, 0, 0, .1) 0 3px 5px, rgba(0, 0, 0, .1) 0 10px 13px;
     transform: scale(1.2);
   }
+
+  @include onMobile {
+    width: 200px;
+
+    font-size: 14px;
+  }
 }
 
 .modal {
   width: 300px;
   height:300px;
+
   background-color: #fff;
   border-radius: 15px;
   box-shadow: 0 8px 16px rgba(54, 62, 113, 0.24);

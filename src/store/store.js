@@ -42,24 +42,43 @@ const store = createStore({
     },
     calculateResult(state) {
       const currentValue = parseFloat(state.displayValue);
-  
-      if (state.operator === '+') {
-        state.displayValue = state.storedValue + currentValue;
-      }
-      
-      if (state.operator === '-') {
-        state.displayValue = state.storedValue - currentValue;
-      }
-      
-      if (state.operator === 'x') {
-        state.displayValue = state.storedValue * currentValue;
-      }
-      
-      if (state.operator === '÷') {
-        state.displayValue = state.storedValue / currentValue;
-      }
-  
-      state.displayValue = state.displayValue.toString();
+      let result;
+    
+      switch (state.operator) {
+        case '+':
+          result = state.storedValue + currentValue;
+          break;
+        case '-':
+          result = state.storedValue - currentValue;
+          break;
+        case 'x':
+          result = state.storedValue * currentValue;
+          break;
+        case '÷':
+          if (currentValue === 0) {
+            result = 'Error';
+          }
+
+          if (currentValue === 1) {
+            result = Math.floor(state.storedValue / currentValue);
+          }
+
+          if (currentValue !== 0 && currentValue !== 1) {
+            result = (state.storedValue / currentValue).toFixed(6);
+          }
+          break;
+        default:
+          result = state.displayValue.toString();
+        }
+
+        if (result === 0) {
+          state.displayValue = '0';
+        }
+
+        if (result !== 0) {
+          state.displayValue = result.toString();
+        }
+
       state.operator = null;
       state.waitingForOperand = false;
       state.storedValue = null;
@@ -76,6 +95,13 @@ const store = createStore({
     setError(state, error) {
       state.error = error;
     },
+    clearCalculator(state) {
+      state.displayValue = '0';
+      state.operator = null;
+      state.waitingForOperand = false;
+      state.storedValue = null;
+      state.hasComputed = false;
+    },
   },
   actions: {
     handleDigitClick({ state, commit }, digit) {
@@ -86,7 +112,7 @@ const store = createStore({
         if (state.displayValue === '0' && digit !== '.') {
           commit('updateDisplay', digit);
         } else {
-          const newDisplayValue = (state.displayValue + digit).slice(0, 7);
+          const newDisplayValue = (state.displayValue + digit).slice(0, 8);
           commit('updateDisplay', newDisplayValue);
         }
       }
@@ -125,6 +151,7 @@ const store = createStore({
 
         commit('setCharacterInfo', data);
       } catch (error) {
+        console.log('error');
         commit('setError', error);
       }
     },

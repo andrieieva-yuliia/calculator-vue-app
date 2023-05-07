@@ -3,10 +3,24 @@ import { mapActions, mapGetters } from 'vuex';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
+  data() {
+    return {
+      invalidValues: [
+        'none',
+        'unknown',
+        'n/a'
+      ],
+    };
+  },
   computed: {
-    ...mapGetters(['isModalVisible', 'showButton', 'characterInfo', 'isError']),
+    ...mapGetters([
+      'isModalVisible',
+      'showButton',
+      'characterInfo',
+      'isError'
+    ]),
 },
-mounted() {
+  mounted() {
     this.fetchCharacterInfo();
   },
   methods: {
@@ -15,9 +29,6 @@ mounted() {
       this.closeModal();
     },
   },
-  created() {
-    this.fetchCharacterInfo();
-  }
 });
 </script>
 
@@ -26,8 +37,10 @@ mounted() {
     <div class="button-box">
       <button class="close-button" @click="handleCloseClick">x</button>
     </div>
-    <div v-if="isError" class="error">Unable to load information</div>
-    <div v-else>
+
+    <div v-if="isError" class="error-box">Unable to load information</div>
+
+    <div class="info-box" v-else>
       <div v-if="characterInfo" class="info">
         <div>
           <span class="info__title">Name:</span>
@@ -37,19 +50,11 @@ mounted() {
           <span class="info__title">Height:</span>
           {{ characterInfo.height }}
         </div>
-        <div
-          v-if="characterInfo.mass !== 'none'
-            && characterInfo.mass !== 'unknown'
-            && characterInfo.mass !== 'n/a'"
-        >
+        <div v-if="!invalidValues.includes(characterInfo.mass)">
           <span class="info__title">Mass:</span>
           {{ characterInfo.mass }}
         </div>
-        <div
-          v-if="characterInfo.hair_color !== 'none'
-            && characterInfo.hair_color !== 'unknown'
-            && characterInfo.hair_color !== 'n/a'"
-          >
+        <div v-if="!invalidValues.includes(characterInfo.hair_color)">
           <span class="info__title">Hair color:</span>
           {{ characterInfo.hair_color }}
         </div>
@@ -61,14 +66,11 @@ mounted() {
           <span class="info__title">Eye color:</span>
           {{ characterInfo.eye_color }}
         </div>
-        <div
-          v-if="characterInfo.birth_year !== 'none'
-            && characterInfo.birth_year !== 'unknown'"
-        >
+        <div v-if="!invalidValues.includes(characterInfo.birth_year)">
           <span class="info__title">Birth year:</span>
           {{ characterInfo.birth_year }}
         </div>
-        <div>
+        <div v-if="!invalidValues.includes(characterInfo.gender)">
           <span class="info__title">Gender:</span>
           {{ characterInfo.gender }}
         </div>
@@ -87,24 +89,24 @@ mounted() {
         <div v-if="!!characterInfo.species.length">
           <div class="info__title">Species:</div>
           <ul class="list">
-            <li v-for="species in characterInfo.species" :key="species">
-              {{ species }}
+            <li v-for="specie in characterInfo.species" :key="specie">
+              {{ specie }}
             </li>
           </ul>
         </div>
         <div v-if="!!characterInfo.vehicles.length">
           <div class="info__title">Vehicles:</div>
           <ul class="list">
-            <li v-for="vehicles in characterInfo.vehicles" :key="vehicles">
-              {{ vehicles }}
+            <li v-for="vehicle in characterInfo.vehicles" :key="vehicle">
+              {{ vehicle }}
             </li>
           </ul>
         </div>
         <div v-if="!!characterInfo.starships.length">
           <div class="info__title">Starships:</div>
           <ul class="list">
-            <li v-for="starships in characterInfo.starships" :key="starships">
-              {{ starships }}
+            <li v-for="starship in characterInfo.starships" :key="starship">
+              {{ starship }}
             </li>
           </ul>
         </div>
@@ -118,33 +120,39 @@ mounted() {
           {{ characterInfo.url }}
         </div>
       </div>
-      <div v-else>
-        <div class="loader">
-          <div class="loader__dot"></div>
-          <div class="loader__dot"></div>
-          <div class="loader__dot"></div>
-        </div>
+
+      <div v-else class="loader">
+        <div class="loader__dot"></div>
+        <div class="loader__dot"></div>
+        <div class="loader__dot"></div>
       </div>
     </div>
   </div>
 </template>
 
 <style lang="scss">
+@import '../style/mixins.scss';
+
 .modal-component {
   display: flex;
   flex-direction: column;
   justify-content: center;
   
-  width: 700px;
-  height: 700px;
+  width: max-content;
+  height: max-content;
   border: 1px solid #e4e4e4;
+
+  @include onMobile {
+    width: 300px;
+    height: max-content;
+  }
 }
 
 .button-box {
   display: flex;
   justify-content: end;
 
-  margin-right: 30px;
+  margin: 10px 10px 0 0;
 }
 
 .close-button {
@@ -155,6 +163,7 @@ mounted() {
   width: 30px;
   height: 30px;
   color: #656565;
+  font-size: 14px;
 
   border: none;
   border-radius: 10px;
@@ -165,23 +174,43 @@ mounted() {
   &:hover {
     filter: opacity(50%);
   }
-}
 
-.error {
-  position: relative;
-  left: 230px;
+  @include onMobile {
+    width: 20px;
+    height: 20px;
 
-  font-size: 20px;
+    border-radius: 5px;
+    }
+  }
+
+.error-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 24px;
   font-weight: 500;
   color: #6e0202;
 
-  width: 300px;
-  height: 30px;
+  width: 700px;
+  height: 100px;
+
+  padding-bottom: 30px;
+
+  @include onMobile {
+    width: 300px;
+    padding-bottom: 20px;
+    font-size: 20px;
+  }
+}
+
+.info-box {
+  width: max-content;
 }
 
 .info {
-  width: 600px;
-  height: 600px;
+  width: max-content;
+  height: max-content;
   padding: 10px 50px 30px 50px;
 
   font-size: 16px;
@@ -189,7 +218,13 @@ mounted() {
 
   &__title {
     color: #040074;
-    font-weight: 500;
+    font-weight: 600;
+  }
+
+  @include onMobile {
+    padding: 5px 10px 10px 10px;
+    width: 300px;
+    height: max-content;
   }
 }
 
@@ -201,14 +236,19 @@ mounted() {
   display: flex;
   justify-content: center;
   align-items: center;
+
+  width: 300px;
   height: 100px;
+  padding: 30px 30px 40px 30px;
 
   &__dot {
     width: 20px;
     height: 20px;
+
     border-radius: 50%;
     background-color: #000;
     margin: 0 5px;
+    
     animation: loader-anim 1s infinite ease-in-out alternate;
   }
 }
@@ -223,6 +263,4 @@ mounted() {
     opacity: 1;
   }
 }
-
-
 </style>
