@@ -46,43 +46,38 @@ const store = createStore({
     
       switch (state.operator) {
         case '+':
-          result = state.storedValue + currentValue;
+          result = (state.storedValue + currentValue).toFixed(6);
           break;
         case '-':
-          result = state.storedValue - currentValue;
+          result = (state.storedValue - currentValue).toFixed(6);
           break;
         case 'x':
-          result = state.storedValue * currentValue;
+          result = (state.storedValue * currentValue).toFixed(6);
           break;
         case '÷':
           if (currentValue === 0) {
             result = 'Error';
-          }
-
-          if (currentValue === 1) {
+          } else if (currentValue === 1) {
             result = Math.floor(state.storedValue / currentValue);
-          }
-
-          if (currentValue !== 0 && currentValue !== 1) {
+          } else {
             result = (state.storedValue / currentValue).toFixed(6);
           }
           break;
         default:
           result = state.displayValue.toString();
-        }
+      }
 
-        if (result === 0) {
-          state.displayValue = '0';
-        }
-
-        if (result !== 0) {
-          state.displayValue = result.toString();
-        }
+      if (result === '0') {
+        state.displayValue = '0';
+      } else {
+        state.displayValue = parseFloat(result).toString();
+      }
 
       state.operator = null;
       state.waitingForOperand = false;
       state.storedValue = null;
     },
+    
     setModalVisible(state, visible) {
       state.isModalVisible = visible;
     },

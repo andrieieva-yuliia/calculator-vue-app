@@ -9,6 +9,7 @@ This project was built using the following technologies:
 - Vue.js
 - Vuex
 - Vue Router
+- Axios
 - SCSS
 
 ## Installation
